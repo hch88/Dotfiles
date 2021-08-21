@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+
+from youtube_search import YoutubeSearch
+import subprocess
+import sys
+import math
+
+MAX_RESULTS = 10
+ROFI_PROMPT = "  YouTube ❯"
+TEMP_FILE = "/tmp/yt_rofi"
+
+
+def search(search_term):
+    """Searches youtube for the given search term
+
+    :search_term: string search_term
+    :returns: results_dictionary
+
+    """
+    results = YoutubeSearch(search_term, max_results=10)
+    return results
+
+
+def write_to_temp_file(text):
+    f = open(TEMP_FILE, "w")
+    f.write(text)
+    f.close()
+
+
+def get_user_search_input():
+    result = subprocess.run(
+        [
+            "rofi",
+            "-location",
+            "2",
+            "-yoffset",
+            "400",
+            "-lines",
+            "0",
+            "-dmenu",
+            "-i",
+            "-fuzzy",
+            "-p",
+            ROFI_PROMPT,
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return result.stdout
+
+
+html_escape_table = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&apos;",
+    ">": "&gt;",
+    "<": "&lt;",
+}
+
+
+def html_escape(text):
+    """Produce entities within text."""
+    return "".join(html_escape_table.get(c, c) for c in text)
+
+
+def get_mark_up_for_video(video):
+    title = html_escape(video.get("title"))
+    duration = video.get("duration")
+    channel = html_escape(video.get("channel"))
+    views = format_views(video.get("views"))
+    published = video.get("publish_time")
+
+    markup = '<span>{}</span>\r<span font="SF Pro Rounded 12" foreground="#aa6ea0">Duration: {} | By {} | {} | Published: {}</span>'.format(
+        title, duration, channel, views, published
+    )
+    return markup
+
+
+millnames = ["", " K", " M", " B", " T"]
+
+
+def millify(n):
+    n = float(n)
+    millidx = max(
+        0,
+        min(
+            len(millnames) - 1, int(math.floor(0 if n == 0 else math.log10(abs(n)) / 3))
+        ),
+    )
+
+    return "{:.0f}{}".format(n / 10 ** (3 * millidx), millnames[millidx])
+
+
+def format_views(views):
+    views_num = int(views.replace(" views", "").replace(",", ""))
+    return millify(views_num).replace(" ", "") + " views"
+
+
+def get_rofi_options_for_results(search_results):
+    rofi_options = ""
+    for video in search_results.videos:
+        rofi_options = rofi_options + get_mark_up_for_video(video) + "\0icon\x1f/home/harish/.config/rofi/icons/youtube_icon.svg\n"
+    return rofi_options
+
+
+def get_video_selection():
+    cmd = (
+        "cat /tmp/yt_rofi | rofi -location 2 -yoffset 400 -format i -markup-rows -lines 5 -dmenu -i -fuzzy -p '"
+        + ROFI_PROMPT
+        + "'"
+    )
+    ps = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    output = ps.communicate()[0]
+    if ps.returncode != 0:
+        sys.exit()
+
+    return int(output.decode("utf-8"))
+
+
+def play_youtube_video(video_id):
+    video_url = "https://www.youtube.com/watch?v=" + video_id
+    subprocess.run(
+        [
+            "mpv",
+            "--ytdl-raw-options=format=bestvideo[height<=1200]+bestaudio/best[height<=1200]",
+            video_url,
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+
+def main():
+    user_provided_search_term = get_user_search_input()
+
+    search_results = search(user_provided_search_term)
+    rofi_options = get_rofi_options_for_results(search_results)
+    write_to_temp_file(rofi_options)
+
+    selected_index = get_video_selection()
+    video_id = search_results.videos[selected_index].get("id")
+
+    play_youtube_video(video_id)
+
+
+if __name__ == "__main__":
+    main()

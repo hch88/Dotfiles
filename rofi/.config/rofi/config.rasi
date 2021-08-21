@@ -1,0 +1,79 @@
+configuration {
+  columns: 1;
+  font: "SF Pro Display 16";
+  bw: 0;
+  location: 0;
+  padding: 0;
+  fixed-num-lines: true;
+  lines: 4;
+  hide-scrollbar: true;
+  fullscreen: false;
+  fake-transparency: false;
+  scroll-method: 1;
+  click-to-exit: true;
+  show-match: false;
+  show-icons: true;
+  display-drun: "";
+  display-window: "缾";
+  drun-display-format: "{name}{icon}";
+  display-window: "缾";
+}
+
+element {
+  border: 0px 0px 1px 0px;
+  border-color: #404040;
+}
+
+element-icon {
+  size: 50px;
+  padding: 10px 20px 10px 10px;
+  border: 0px 1px 0px 0px;
+  border-color: #404040;
+}
+
+* {
+  background-color: #1a2026;
+  text-color: #526170;
+}
+
+#window {
+  padding: 10px;
+  width: 600px;
+}
+
+listview {
+  fixed-height: 0;
+  border: 0px;
+  scrollbar: false;
+  padding: 2px 0px 0px;
+}
+
+prompt {
+  text-color: #7FE4D2;
+  font: "SF Pro Display 16";
+  padding: 5px;
+  scrollbar: false;
+}
+
+inputbar,
+textbox-prompt-colon,
+entry {
+  border-color: #ffd5cd;
+  text-color: #ffffff;
+  padding: 10px;
+}
+
+#element.selected {
+  background-color: #1e252c;
+  text-color: #FFFFFF;
+}
+
+inputbar {
+  border-color: #404040;
+  border: 0px 0px 1px 0px;
+}
+
+element-text {
+  vertical-align: 0.5;
+  padding: 10px 0px 10px 10px;
+}

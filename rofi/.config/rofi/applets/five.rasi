@@ -1,0 +1,88 @@
+/*
+ *
+ * Author  : Aditya Shakya
+ * Mail    : adi1090x@gmail.com
+ * Github  : @adi1090x
+ * Twitter : @adi1090x
+ *
+ * vim:ft=css
+ */
+
+configuration {
+  disable-history: false;
+  fullscreen: false;
+  hide-scrollbar: true;
+  sidebar-mode: false;
+  show-icons: false;
+}
+
+@import "colors.rasi" * {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+window {
+  transparency: "real";
+  border-radius: 12px;
+  width: 100px;
+  location: east;
+  x-offset: -15px;
+  y-offset: 0px;
+}
+
+listview {
+  lines: 5;
+  margin: 8px;
+  spacing: 8px;
+  cycle: true;
+  dynamic: true;
+  layout: vertical;
+}
+
+mainbox {
+  background-color: @background;
+  children: [ listview ];
+}
+
+element {
+  background-color: @background-light;
+  text-color: @foreground;
+  orientation: vertical;
+  border-radius: 12px;
+  border: 0px;
+}
+
+element-text {
+  font: "FiraCode Nerd Font 20";
+  expand: true;
+  horizontal-align: 0.5;
+  padding: 10px;
+}
+
+element normal.urgent,
+element alternate.urgent {
+  background-color: @off;
+  text-color: @background;
+}
+
+element normal.active,
+element alternate.active {
+  background-color: @on;
+  text-color: @background;
+}
+
+element selected {
+  background-color: @accent;
+  text-color: @selection;
+  border: 0px;
+}
+
+element selected.urgent {
+  background-color: @on;
+  text-color: @background;
+}
+
+element selected.active {
+  background-color: @off;
+  color: @background;
+}
