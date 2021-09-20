@@ -35,14 +35,17 @@ bspc config split_ratio 0.50
 bspc config pointer_modifier mod4
 bspc config pointer_action1 move
 
-feh --bg-fill ~/Pictures/wallpaper/freezydreamin-SV3V-D1G2q4-unsplash.jpg
+feh --bg-fill ~/Pictures/wallpaper/freezydreamin-SV3V-D1G2q4-unsplash.jpg &
 
 # eww for widgets
-~/.bin/eww daemon
+~/.bin/eww daemon &
 
 # polybar 
 cp -r ~/Public/poly/bsp/polybar ~/.config/ &
 ~/.config/polybar/launch.sh &
 
 # picom as compositor
-picom --experimental-backend --config ~/.config/picom/picom.conf
+picom --experimental-backend --config ~/.config/picom/picom.conf &
+
+# Battery notifications
+sh ~/.bin/battery_notifications.sh &

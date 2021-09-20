@@ -82,6 +82,10 @@
     desktop_entry = Slack
     new_icon = /usr/share/icons/Nord-Icon/48x48/apps/slack.svg
 
+[low_battery_icon]
+    appname = Battery
+    new_icon = ~/.config/dunst/icons/low_battery.svg
+
 [dunst_icon]
     appname = dunst
     new_icon = ~/.config/dunst/icons/notifications_normal.svg
