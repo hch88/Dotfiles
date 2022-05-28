@@ -21,7 +21,7 @@ endif
 
 " Run scripts using <C-c><C-c>
 nnoremap <buffer> <C-c><C-c>
-      \ :w\|Redir !sh %<CR>
+      \ :w\|Trun sh %<CR>
 
 let b:undo_ftplugin .= '|nunmap <buffer> <C-c><C-c>'
 
