@@ -1,0 +1,165 @@
+#!/usr/bin/env python
+
+import pornhub
+import subprocess
+import math
+import sys
+
+MAX_RESULTS = 10
+ROFI_PROMPT = "AVideos ❯"
+TEMP_FILE = "/tmp/av_rofi"
+
+
+def get_user_search_input():
+    result = subprocess.run(
+        [
+            "rofi",
+            "-location",
+            "2",
+            "-yoffset",
+            "400",
+            "-lines",
+            "0",
+            "-dmenu",
+            "-i",
+            "-fuzzy",
+            "-p",
+            ROFI_PROMPT,
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return result.stdout
+
+
+html_escape_table = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&apos;",
+    ">": "&gt;",
+    "<": "&lt;",
+}
+
+
+def html_escape(text):
+    """Produce entities within text."""
+    return "".join(html_escape_table.get(c, c) for c in text)
+
+
+def get_mark_up_for_video(video):
+    title = html_escape(video.get("name"))
+    print("Title:", title)
+    duration = video.get("duration")
+    rating = video.get("rating")
+
+    markup = '<span>{}</span>\r<span font="SF Pro Rounded 12" foreground="#aa6ea0">Duration: {} | Rating: {}</span>'.format(
+        title, duration, rating
+    )
+    return markup
+
+
+def search(search_term):
+    videos = pornhub.PornHub(keywords=search_term.split()).getVideos(
+        MAX_RESULTS, page=2
+    )
+    results = []
+    for video in videos:
+        results.append(
+            {
+                "name": video["name"],
+                "duration": video["duration"],
+                "rating": video["rating"],
+                "url": video["url"],
+            }
+        )
+    return results
+
+
+millnames = ["", " K", " M", " B", " T"]
+
+
+def millify(n):
+    n = float(n)
+    millidx = max(
+        0,
+        min(
+            len(millnames) - 1, int(math.floor(0 if n == 0 else math.log10(abs(n)) / 3))
+        ),
+    )
+
+    return "{:.0f}{}".format(n / 10 ** (3 * millidx), millnames[millidx])
+
+
+def format_views(views):
+    views_num = int(views.replace(" views", "").replace(",", ""))
+    return millify(views_num).replace(" ", "") + " views"
+
+
+def get_rofi_options_for_results(search_results):
+    rofi_options = ""
+    for video in search_results:
+        rofi_options = (
+            rofi_options
+            + get_mark_up_for_video(video)
+            + "\0icon\x1f/home/harish/.config/rofi/icons/youtube_icon.svg\n"
+        )
+    return rofi_options
+
+
+def write_to_temp_file(text):
+    f = open(TEMP_FILE, "w")
+    f.write(text)
+    f.close()
+
+
+def get_video_selection():
+    cmd = (
+        "cat /tmp/av_rofi | rofi -location 2 -yoffset 400 -format i -markup-rows -lines 5 -dmenu -i -fuzzy -p '"
+        + ROFI_PROMPT
+        + "'"
+    )
+    ps = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    output = ps.communicate()[0]
+    if ps.returncode != 0:
+        sys.exit()
+
+    return int(output.decode("utf-8"))
+
+
+def play_avideo(video_url):
+    subprocess.run(
+        [
+            "mpv",
+            "--ytdl-raw-options=format=bestvideo[height<=1200]+bestaudio/best[height<=1200]",
+            video_url,
+        ],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+
+def check_connected_to_vpn():
+    p = subprocess.Popen("nordvpn status | head -1 | awk -F ': ' '{print $2}'", shell=True, stdout=subprocess.PIPE)
+    vpn_status = p.stdout.readlines(-1)[0]
+    if "Connected" != vpn_status.decode("utf-8").strip():
+        subprocess.Popen('rofi -theme "~/.config/rofi/applets/message.rasi" -e "Please connect to vpn first!"', shell=True)
+        raise Exception("Not connected to vpn, exiting here")
+
+def main():
+    check_connected_to_vpn()
+    user_provided_search_term = get_user_search_input()
+
+    search_results = search(user_provided_search_term)
+    rofi_options = get_rofi_options_for_results(search_results)
+    write_to_temp_file(rofi_options)
+
+    selected_index = get_video_selection()
+    video_url = search_results[selected_index].get("url")
+    print("video url", video_url)
+
+    play_avideo(video_url)
+
+
+if __name__ == "__main__":
+    main()

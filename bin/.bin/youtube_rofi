@@ -6,7 +6,7 @@ import sys
 import math
 
 MAX_RESULTS = 10
-ROFI_PROMPT = "  YouTube ❯"
+ROFI_PROMPT = " "
 TEMP_FILE = "/tmp/yt_rofi"
 
 

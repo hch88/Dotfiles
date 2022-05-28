@@ -1,0 +1,5 @@
+# Load Xresources
+xrdb -load ~/.Xresources
+
+# Start compositor
+picom --experimental-backend --config ~/.config/picom/picom.conf &

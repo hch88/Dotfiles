@@ -1,8 +1,11 @@
 (setq doom-theme 'doom-nord)
 
-(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18)
-      doom-unicode-font (font-spec :family "Font Awesome 5 Free Solid" :size 22)
-      doom-big-font (font-spec :family "FiraCode Nerd Font" :size 24))
+(setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 18)
+      doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 24)
+      doom-variable-pitch-font (font-spec :family "SF Pro Display" :size 18)
+      doom-unicode-font (font-spec :family "Liga SFMono Nerd Font"))
+
+(add-hook! 'org-mode-hook #'+org-pretty-mode) ;enter mixed pitch mode in org mode
 
 (setq doom-themes-enable-bold t
       doom-themes-enable-italic t)
@@ -99,6 +102,8 @@
 
 (custom-set-variables
  '(git-gutter:update-interval 2))
+
+(setq org-roam-v2-ack t)
 
 (use-package org-roam
   :ensure t

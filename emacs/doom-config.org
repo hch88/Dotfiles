@@ -7,10 +7,16 @@
 
 *** Font
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "FiraCode Nerd Font" :size 18)
-      doom-unicode-font (font-spec :family "Font Awesome 5 Free Solid" :size 22)
-      doom-big-font (font-spec :family "FiraCode Nerd Font" :size 24))
+(setq doom-font (font-spec :family "Liga SFMono Nerd Font" :size 18)
+      doom-big-font (font-spec :family "Liga SFMono Nerd Font" :size 24)
+      doom-variable-pitch-font (font-spec :family "SF Pro Display" :size 18)
+      doom-unicode-font (font-spec :family "Liga SFMono Nerd Font"))
 #+end_src
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook #'+org-pretty-mode) ;enter mixed pitch mode in org mode
+#+end_src
+
 
 *** Enable Italics and Bold
 #+begin_src emacs-lisp
@@ -136,6 +142,11 @@ Open splits to the right or in the bottom
 #+END_SRC
 
 ** Org-roam
+*** Ack the V2 warning
+#+begin_src emacs-lisp
+(setq org-roam-v2-ack t)
+
+#+end_src
 *** Basic Config
 #+begin_src emacs-lisp
 (use-package org-roam
