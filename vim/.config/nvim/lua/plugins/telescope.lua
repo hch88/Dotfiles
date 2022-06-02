@@ -46,11 +46,11 @@ require('telescope').setup {
             preview_title = false,
         },
         find_files = vim.tbl_deep_extend('force', custom_ivy_opts, {
-            prompt_title = ' Find Files',
+            prompt_title = ' Files',
             preview_title = false,
         }),
         oldfiles = vim.tbl_deep_extend('force', custom_ivy_opts, {
-            prompt_title = ' Recently Opened',
+            prompt_title = ' Recent',
             preview_title = false,
             path_display = function(_, path)
               return vim.fn.fnamemodify(path, ':s?/Volumes/workplace/.\\{-}/src/?#/?:~:.')

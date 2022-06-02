@@ -1,6 +1,4 @@
 -------------------- OPTIONS --------------------
-local cmd = vim.cmd
-
 local scopes = {o = vim.o, b = vim.bo, w = vim.wo}
 local function opt(scope, key, value)
     scopes[scope][key] = value
@@ -32,16 +30,14 @@ opt('o', 'fillchars', 'diff: ')
 opt('o', 'inccommand', "nosplit")
 opt('o', 'wildignore', '*.pyc')
 opt('o', 'showmode', false)
+opt('o', 'termguicolors', true)
+
 
 -------------------- PERSISTENT UNDO --------------------
 if vim.fn.has('persistent_undo') == 1 then
     opt('o', 'undofile', true)
     vim.api.nvim_command('set undodir^=~/.config/nvim/cache/undo//')
 end
-
--------------------- COMMANDS --------------------
-cmd 'au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout = 300}'
-cmd 'au BufEnter * lua require("sane_path").set_path()'
 
 vim.g.did_load_filetypes = 1
 

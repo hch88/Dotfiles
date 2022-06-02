@@ -28,11 +28,7 @@ endfunction
 function! s:Restore() abort
   let &l:cursorline = get(w:, 'cursorline_current', &g:cursorline)
 
-  if luaeval('vim.api.nvim_win_get_config("$")["relative"]') == ""
-    let w:cursorline_current = &l:cursorline
-  else
-    let &l:cursorline = 0
-  endif
+  let w:cursorline_current = &l:cursorline
 endfunction
 
 " Call s:Suspend() on all windows besides the current one

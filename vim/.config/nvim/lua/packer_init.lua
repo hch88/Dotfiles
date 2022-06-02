@@ -24,7 +24,7 @@ return require('packer').startup(function()
         requires = {
             {'honza/vim-snippets'}
         },
-        config = [[require('ultisnip_settings')]],
+        config = [[require('plugins.ultisnips')]],
     }
 
     -- LSP
@@ -33,10 +33,9 @@ return require('packer').startup(function()
         opt = true,
         wants = {
             "cmp-nvim-lsp",
-            "null-ls.nvim",
         },
         event = "BufReadPre",
-        config = [[require('lsp_settings')]],
+        config = [[require('plugins.lsp')]],
     }
 
     use {
@@ -46,6 +45,9 @@ return require('packer').startup(function()
             {'neovim/nvim-lspconfig'}
         },
         event = "BufReadPre",
+        config = function()
+            require('plugins.null_ls')
+        end
     }
 
     use {
@@ -54,7 +56,7 @@ return require('packer').startup(function()
         module = 'trouble',
         config = function()
             require("trouble").setup {
-                mode = "lsp_document_diagnostics",
+                mode = "document_diagnostics",
                 action_keys = {
                     close = "q",
                     cancel = "<esc>",
@@ -134,7 +136,7 @@ return require('packer').startup(function()
         requires = {
             {'nvim-treesitter/nvim-treesitter-textobjects'},
         },
-        config = [[require('treesitter_settings')]],
+        config = [[require('plugins/treesitter')]],
     }
 
     use 'junegunn/fzf'
@@ -153,7 +155,7 @@ return require('packer').startup(function()
             'trouble.nvim'
         },
         config = function()
-            require('telescope_config')
+            require('plugins/telescope')
         end
     }
     use {'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
@@ -166,12 +168,11 @@ return require('packer').startup(function()
         end
     }
 
-    use 'EdenEast/nightfox.nvim'
-
     use {
-        'Pocco81/Catppuccino.nvim',
+        'norcalli/nvim-colorizer.lua',
         event = "BufReadPost"
     }
+
     use {
         'kyazdani42/nvim-web-devicons',
         event = "VimEnter"
@@ -196,7 +197,7 @@ return require('packer').startup(function()
         wants = {
             "lspkind-nvim",
         },
-        config = [[require('autocompletion')]],
+        config = [[require('plugins.cmp')]],
     }
 
     use {
@@ -207,10 +208,11 @@ return require('packer').startup(function()
     }
 
     use {
-        'nvim-lualine/lualine.nvim',
+        'feline-nvim/feline.nvim',
+        branch = '0.5-compat',
         requires = {'kyazdani42/nvim-web-devicons', opt = true},
         config = function()
-            require('statusline')
+            -- require("plugins.feline").setup()
         end
     }
 

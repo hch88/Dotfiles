@@ -21,8 +21,8 @@ local on_attach = function(client, _)
     map('n', 'gR',  '<cmd>lua vim.lsp.buf.rename()<CR>')
     map('n', 'gD',  '<cmd>Telescope lsp_definitions<CR>')
     map('n', 'gd',  '<cmd>Telescope lsp_definitions<CR>')
-    map('n', '[e',  '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-    map('n', ']e',  '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
+    map('n', '[e',  '<cmd>lua vim.diagnostic.goto_prev()<CR>')
+    map('n', ']e',  '<cmd>lua vim.diagnostic.goto_next()<CR>')
     map('n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>')
 
     client.resolved_capabilities.document_formatting = false
@@ -32,10 +32,10 @@ end
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-local signs = { Error = " ", Warning = " ", Hint = " ", Information = " " }
-
+-- Change diagnostic symbols in the sign column (gutter)
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
-  local hl = "LspDiagnosticsSign" .. type
+  local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
@@ -48,20 +48,9 @@ for _, lsp in ipairs(servers) do
     }
 end
 
-local system_name
-if vim.fn.has("mac") == 1 then
-  system_name = "macOS"
-elseif vim.fn.has("unix") == 1 then
-  system_name = "Linux"
-elseif vim.fn.has('win32') == 1 then
-  system_name = "Windows"
-else
-  print("Unsupported system for sumneko")
-end
-
 -- set the path to the sumneko installation; if you previously installed via the now deprecated :LspInstall, use
-local sumneko_root_path = '/Users/chndha/.local/bin/lua-language-server'
-local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
+local sumneko_root_path = '/home/harish/.local/bin/lua-language-server'
+local sumneko_binary = sumneko_root_path.."/bin/lua-language-server"
 
 local luadev = require("lua-dev").setup({
   -- add any options here, or leave empty to use the default settings
@@ -78,28 +67,6 @@ local luadev = require("lua-dev").setup({
 })
 
 nvim_lsp.sumneko_lua.setup(luadev)
-
-
-local null_ls = require("null-ls")
-
--- register any number of sources simultaneously
-local sources = {
-    null_ls.builtins.formatting.prettier.with({
-        filetypes = { "html", "json", "yaml", "markdown" },
-    }),
-    null_ls.builtins.formatting.black.with({
-        filetypes = { "python" },
-    }),
-    null_ls.builtins.formatting.isort.with({
-        filetypes = { "python" },
-    }),
-    null_ls.builtins.formatting.goimports,
-    null_ls.builtins.formatting.shfmt.with({
-        extra_args = { "-i", "2", "-ci" }
-    }),
-    null_ls.builtins.diagnostics.write_good,
-    null_ls.builtins.code_actions.gitsigns,
-}
 
 vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
     border = 'single'
