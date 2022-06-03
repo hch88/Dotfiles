@@ -439,6 +439,8 @@ options.theme = {
    bg = get_color("Feline", "bg#"),
 }
 
+vim.opt.laststatus = 3
+
 feline.setup {
    theme = options.theme,
    components = options.components,
