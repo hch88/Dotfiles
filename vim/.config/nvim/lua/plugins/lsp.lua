@@ -1,32 +1,52 @@
 -- LSP Settings
 local nvim_lsp = require 'lspconfig'
 
-local function map(mode, lhs, rhs, opts)
-    local options = {silent = true, noremap = true}
-    if opts then options = vim.tbl_extend('force', options, opts) end
-    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
+local on_attach = function(client, bufnr)
+    local bufopts = { noremap=true, silent=true, buffer=bufnr }
 
-local on_attach = function(client, _)
-    map('n', ',la', '<cmd>Telescope lsp_code_actions<CR>')
-    map('n', ',ca', '<cmd>Telescope lsp_code_actions<CR>')
-    map('v', ',ca', ':<C-U>Telescope lsp_range_code_actions<CR>')
-    map('v', ',la', ':<C-U>Telescope lsp_range_code_actions<CR>')
-    map('n', ',lf', '<cmd>lua vim.lsp.buf.formatting()<CR>')
-    map('n', 'gr',  '<cmd>Telescope lsp_references<CR>')
-    map('n', ',ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>')
-    map('n', 'K',   '<cmd>lua vim.lsp.buf.hover()<CR>')
-    map('n', 'gs',  '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-    map('i', '<C-k>',  '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-    map('n', 'gR',  '<cmd>lua vim.lsp.buf.rename()<CR>')
-    map('n', 'gD',  '<cmd>Telescope lsp_definitions<CR>')
-    map('n', 'gd',  '<cmd>Telescope lsp_definitions<CR>')
-    map('n', '[e',  '<cmd>lua vim.diagnostic.goto_prev()<CR>')
-    map('n', ']e',  '<cmd>lua vim.diagnostic.goto_next()<CR>')
-    map('n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>')
+    vim.keymap.set('n', ',la', '<cmd>Telescope lsp_code_actions<CR>', bufopts)
+    vim.keymap.set('n', ',ca', '<cmd>Telescope lsp_code_actions<CR>', bufopts)
+    vim.keymap.set('v', ',ca', ':<C-U>Telescope lsp_range_code_actions<CR>', bufopts)
+    vim.keymap.set('v', ',la', ':<C-U>Telescope lsp_range_code_actions<CR>', bufopts)
+    vim.keymap.set('n', ',lf', '<cmd>lua vim.lsp.buf.formatting()<CR>', bufopts)
+    vim.keymap.set('n', 'gr',  '<cmd>Telescope lsp_references<CR>', bufopts)
+    vim.keymap.set('n', ',ls', '<cmd>lua vim.lsp.buf.document_symbol()<CR>', bufopts)
+    vim.keymap.set('n', 'K',   '<cmd>lua vim.lsp.buf.hover()<CR>', bufopts)
+    vim.keymap.set('n', 'gs',  '<cmd>lua vim.lsp.buf.signature_help()<CR>', bufopts)
+    vim.keymap.set('i', '<C-k>',  '<cmd>lua vim.lsp.buf.signature_help()<CR>', bufopts)
+    vim.keymap.set('n', 'gR',  '<cmd>lua vim.lsp.buf.rename()<CR>', bufopts)
+    vim.keymap.set('n', 'gD',  '<cmd>Telescope lsp_definitions<CR>', bufopts)
+    vim.keymap.set('n', 'gd',  '<cmd>Telescope lsp_definitions<CR>', bufopts)
+    vim.keymap.set('n', '<c-]>', '<cmd>lua vim.lsp.buf.definition()<CR>', bufopts)
+
+
+    -- Better jump and show diagnostics
+    local float_opts = {
+        focusable = false,
+        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+        border = 'double',
+        source = 'always',
+        prefix = function(diagnostic, _, _)
+            local severity_symbols = {'', '', '', ''}
+            local symbol_prefix = severity_symbols[diagnostic["severity"]]
+            return ' ' .. symbol_prefix .. ' '
+        end,
+        scope = 'cursor',
+        header = {"   Diagnostics:", "markdownH1"}
+    }
+    local diagnostic_next_options = { float = float_opts }
+    vim.keymap.set('n', '[e',  function() vim.diagnostic.goto_prev(diagnostic_next_options) end, bufopts)
+    vim.keymap.set('n', ']e',  function() vim.diagnostic.goto_next(diagnostic_next_options) end, bufopts)
 
     client.resolved_capabilities.document_formatting = false
     client.resolved_capabilities.document_range_formatting = false
+
+    vim.api.nvim_create_autocmd("CursorHold", {
+        buffer = bufnr,
+        callback = function()
+            vim.diagnostic.open_float(nil, float_opts)
+        end
+    })
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -40,7 +60,7 @@ for type, icon in pairs(signs) do
 end
 
 -- Enable the following language servers
-local servers = { 'bashls', 'vimls', 'gopls', 'rust_analyzer', 'pyright', 'tsserver' }
+local servers = { 'gopls', 'rust_analyzer', 'pyright', 'tsserver' }
 for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup {
         on_attach = on_attach,
