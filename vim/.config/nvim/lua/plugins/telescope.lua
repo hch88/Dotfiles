@@ -95,6 +95,7 @@ map('n', ',ld', '<cmd>Telescope lsp_document_diagnostics<CR>')
 map('n', ',lg', '<cmd>Telescope lsp_definitions<CR>')
 map('n', ',lr', '<cmd>Telescope lsp_references<CR>')
 
+vim.keymap.set('n', ',ct', function() require('colors').theme_selector() end, {})
 -- Extensions
 local extensions = {'fzf'}
 for _, extension in ipairs(extensions) do
