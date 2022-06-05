@@ -71,8 +71,10 @@ M.theme_selector = function()
     -- to execute the function
     local dropdown_opts = require('telescope.themes').get_dropdown {
         results_title = false,
+        prompt_prefix = "  ",
         layout_config = {
-            width = 0.4,
+            anchor = "",
+            width = 45,
             height = 0.3,
         },
     }colors(dropdown_opts)

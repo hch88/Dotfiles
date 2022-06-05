@@ -25,10 +25,6 @@ return {
       bg = theme.base00,
    },
 
-   NormalNC = {
-      bg = theme.base01,
-   },
-
    Bold = {
       bold = true,
    },
@@ -224,10 +220,6 @@ return {
    NvimInternalError = { fg = red },
    WinSeparator = { fg = line },
 
-   -- Dashboard i.e alpha.nvim
-   AlphaHeader = { fg = grey_fg },
-   AlphaButtons = { fg = light_grey },
-
    -- Gitsigns.nvim
    DiffText = {
       fg = black,
@@ -263,10 +255,6 @@ return {
    DiffRemoved = {
       fg = red,
    },
-
-   -- Indent blankline
-   IndentBlanklineChar = { fg = line },
-   IndentBlanklineSpaceChar = { fg = line },
 
    -- LSP References
    LspReferenceText = { fg = darker_black, bg = white },

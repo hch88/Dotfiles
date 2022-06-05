@@ -3,7 +3,7 @@ local colors = require("colors").get_colors()["base_30"]
 return {
 
    TelescopeBorder = {
-      fg = colors.line,
+      fg = colors.darker_black,
       bg = colors.darker_black,
    },
 
@@ -17,6 +17,10 @@ return {
       bg = colors.black2,
    },
 
+   TelescopePromptCounter = {
+      fg = colors.cyan,
+   },
+
    TelescopePromptPrefix = {
       fg = colors.red,
       bg = colors.black2,
@@ -27,11 +31,13 @@ return {
    TelescopePreviewTitle = {
       fg = colors.black,
       bg = colors.green,
+      bold = true,
    },
 
    TelescopePromptTitle = {
       fg = colors.black,
       bg = colors.red,
+      bold = true,
    },
 
    TelescopeResultsTitle = {
@@ -39,5 +45,5 @@ return {
       bg = colors.darker_black,
    },
 
-   TelescopeSelection = { bg = colors.black2, fg = colors.white },
+   TelescopeSelection = { bg = colors.pmenu_bg, fg = colors.black },
 }
