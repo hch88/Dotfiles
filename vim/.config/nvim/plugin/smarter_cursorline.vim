@@ -16,9 +16,9 @@ let g:loaded_smarter_cursorline = 1
 " Suspend 'cursorline' when a window is inactive or inserting
 function! s:Suspend() abort
   " Fix for highlighting issues with plugins like Snap
-  if &buftype == 'prompt'
-    return
-  endif
+  " if &buftype == 'prompt'
+  "   return
+  " endif
 
   let w:cursorline_current = &l:cursorline
   let &l:cursorline = 0
@@ -47,7 +47,9 @@ function! s:Load() abort
   endfor
 
   " Return to the window in which we started
-  execute l:wcur . 'wincmd w'
+  if &filetype !~ "Telescope"
+    execute l:wcur . 'wincmd w'
+  endif
 
 endfunction
 

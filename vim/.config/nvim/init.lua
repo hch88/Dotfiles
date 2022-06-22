@@ -6,7 +6,7 @@ require('core/keymaps')
 require('core/statusline')
 
 -- Name of the theme. Look in lua/colors/themes for the list of themes.
-local theme_name = "catppuccin"
+local theme_name = "rxyhn"
 
 vim.defer_fn(function()
     require("packer_init")

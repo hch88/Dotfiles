@@ -1,5 +1,7 @@
 -- Comments are not italicized
 local cmp = require'cmp'
+local luasnip = require'luasnip'
+
 local kinds = {
     Text = "",
     Method = "",
@@ -28,7 +30,7 @@ local kinds = {
     TypeParameter = "",
 }
 
-local has_any_words_before = function()
+local has_words_before = function()
     if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
         return false
     end
@@ -43,7 +45,7 @@ end
 cmp.setup({
     snippet = {
         expand = function(args)
-            vim.fn["UltiSnips#Anon"](args.body)
+            luasnip.lsp_expand(args.body)
         end,
     },
     mapping = {
@@ -53,21 +55,19 @@ cmp.setup({
         ['<C-e>'] = cmp.mapping.close(),
         ['<CR>'] = cmp.mapping.confirm({ select = false }),
         ["<Tab>"] = cmp.mapping(function(fallback)
-            if vim.fn.complete_info()["selected"] == -1 and vim.fn["UltiSnips#CanExpandSnippet"]() == 1 then
-                press("<C-R>=UltiSnips#ExpandSnippet()<CR>")
-            elseif vim.fn["UltiSnips#CanJumpForwards"]() == 1 then
-                press("<ESC>:call UltiSnips#JumpForwards()<CR>")
+            if luasnip.expand_or_jumpable() then
+                luasnip.expand_or_jump()
             elseif cmp.visible() then
                 cmp.select_next_item()
-            elseif has_any_words_before() then
-                press("<Tab>")
+            elseif has_words_before() then
+                cmp.complete()
             else
                 fallback()
             end
         end, {"i","s"}),
         ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if vim.fn["UltiSnips#CanJumpBackwards"]() == 1 then
-                press("<ESC>:call UltiSnips#JumpBackwards()<CR>")
+            if luasnip.jumpable(-1) then
+                luasnip.jump(-1)
             elseif cmp.visible() then
                 cmp.select_prev_item()
             else
@@ -77,7 +77,7 @@ cmp.setup({
     },
     sources = {
         { name = 'nvim_lsp' },
-        { name = 'ultisnips' },
+        { name = 'luasnip' },
         { name = 'buffer' },
     },
     formatting = {

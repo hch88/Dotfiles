@@ -45,5 +45,5 @@ return {
       bg = colors.darker_black,
    },
 
-   TelescopeSelection = { bg = colors.pmenu_bg, fg = colors.black },
+   -- TelescopeSelection = { bg = colors.pmenu_bg, fg = colors.black },
 }

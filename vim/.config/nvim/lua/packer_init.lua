@@ -19,12 +19,15 @@ return require('packer').startup(function()
     use {'tpope/vim-abolish',event = "BufReadPost"}
     use {'romainl/vim-cool', event = "BufReadPost"}
     use {
-        'SirVer/ultisnips',
-        event = "BufReadPost",
+        'L3MON4D3/LuaSnip',
         requires = {
-            {'honza/vim-snippets'}
+            'rafamadriz/friendly-snippets',
+            after = "LuaSnip",
+            event = "InsertEnter",
         },
-        config = [[require('plugins.ultisnips')]],
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load()
+        end
     }
 
     -- LSP
@@ -191,7 +194,7 @@ return require('packer').startup(function()
         requires = {
             'hrsh7th/cmp-buffer',
             'hrsh7th/cmp-nvim-lsp',
-            'quangnguyen30192/cmp-nvim-ultisnips',
+            'saadparwaiz1/cmp_luasnip',
             'onsails/lspkind-nvim',
         },
         wants = {
